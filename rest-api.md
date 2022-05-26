@@ -63,6 +63,7 @@
 ## 5. Аутентификация запросов
 
 Каждый запрос должен использовать `Basic authentication` c `ClientID`и `SecretKey` клиента в формате `base64(ClientID:SecretKey)`
+
 Пример:
 
 ```https
