@@ -14,6 +14,7 @@
     - [7.2. Отменить размещение заказа](#72-отменить-размещение-заказа)
     - [7.3. Забронировать место для возврата заказа](#73-забронировать-место-для-возврата-заказа)
     - [7.4. Отменить возврат](#74-отменить-возврат)
+    - [7.5. Получить информацию о заказе](#75-получить-информацию-о-заказе)
 
 <!-- /TOC -->
 
@@ -89,7 +90,7 @@ Authorization: Basic NDIyNjoyNTBlNzBmYjgzYmIwYmI2YjJkYjkwMzYwZjI0YWUyMjhiM2I4Y2U
 ### 7.1. Забронировать место для размещения заказа
 
 ```text
-POST /api/v1/terminals/{terminal_id}/orders/{order_id}
+POST api/v1/terminals/{terminal_id}/orders/{order_id}
 ```
 
 Каждый авторизованный пользователь может создать новый заказ. Это приведет к бронированию места под него. В терминале резервируется место, достаточное для размещения заказа, указанного размера.
@@ -105,7 +106,7 @@ POST /api/v1/terminals/{terminal_id}/orders/{order_id}
 
 Имя | Тип | Обязательный | По умолчанию | Описание
 ------------ | ------------ | ------------ | ---------- |------------
-`box_height` | INT | YES | | Высота коробки в см. Максимальный размер не более 40 см.
+`height` | INT | YES | | Высота коробки в см. Максимальный размер не более 40 см.
 `period` | INT | NO | 1 | Срок хранения заказа в сутках. Может принимать значение в диапазоне 1-14
 
 **Результат**
@@ -116,7 +117,7 @@ POST /api/v1/terminals/{terminal_id}/orders/{order_id}
 `code`       | INT       | YES | | Результат выполнения запроса
 `pin`        | INT       | YES | | 5-ти значный уникальный пин-код заказа
 `status`     | INT       | YES | | [Статус заказа](#61-статус-заказа)
-`datetime`   | TIMESTAMP | YES | | Дата и время бронирования в формате timestamp
+`when_created` | TIMESTAMP | YES | | Дата и время создания заказа в формате timestamp
 `period`     | INT       | YES | | Срок хранения заказа
 
 **Возможные коды ошибок**
@@ -134,7 +135,7 @@ POST /api/v1/terminals/{terminal_id}/orders/{order_id}
 
 ```json
 {
-    "box_height": 20,
+    "height": 20,
     "period": 4
 }
 ```
@@ -147,7 +148,7 @@ POST /api/v1/terminals/{terminal_id}/orders/{order_id}
     "code": 1000, 
     "pin": 12345,
     "status": 50,
-    "datetime": 1653553048,
+    "when_created": 1653553048,
     "period": 4
 }
 ```
@@ -164,7 +165,7 @@ POST /api/v1/terminals/{terminal_id}/orders/{order_id}
 ### 7.2. Отменить размещение заказа
 
 ```text
-DELETE /api/v1/terminals/{terminal_id}/orders/{order_id}
+DELETE api/v1/terminals/{terminal_id}/orders/{order_id}
 ```
 
 Каждый авторизованный пользователь может отменить свое бронирование под заказ.
@@ -217,7 +218,7 @@ DELETE /api/v1/terminals/{terminal_id}/orders/{order_id}
 ### 7.3. Забронировать место для возврата заказа
 
 ```text
-POST /api/v1/terminals/{terminal_id}/orders/{order_id}/return
+POST api/v1/terminals/{terminal_id}/orders/{order_id}/return
 ```
 
 Каждый авторизованный пользователь может забронировать место для возврата заказа.
@@ -243,7 +244,7 @@ POST /api/v1/terminals/{terminal_id}/orders/{order_id}/return
 `code`      | INT       | YES          | | Результат выполнения запроса
 `pin`       | INT       | YES          | | 5-ти значный уникальный пин-код заказа
 `status`    | INT       | YES          | | [Статус заказа](#61-статус-заказа)
-`datetime`  | TIMESTAMP | YES          | | Дата и время бронирования в формате timestamp
+`when_created`  | TIMESTAMP | YES      | | Дата и время создания заказа в формате timestamp
 `period`    | INT       | YES          | | Срок размещения в сутках
 
 **Возможные коды ошибок**
@@ -272,7 +273,7 @@ POST /api/v1/terminals/{terminal_id}/orders/{order_id}/return
     "code": 1000, 
     "pin": 12345,
     "status": 50,
-    "datetime": 1653553048,
+    "when_created": 1653553048,
     "period": 2
 }
 ```
@@ -289,7 +290,7 @@ POST /api/v1/terminals/{terminal_id}/orders/{order_id}/return
 ### 7.4. Отменить возврат
 
 ```text
-DELETE /api/v1/terminals/{terminal_id}/orders/{order_id}/return
+DELETE api/v1/terminals/{terminal_id}/orders/{order_id}/return
 ```
 
 Каждый авторизованный пользователь может отменить возврат.
@@ -326,6 +327,66 @@ DELETE /api/v1/terminals/{terminal_id}/orders/{order_id}/return
 ```json
 {
     "code": 1000
+}
+```
+
+**Пример неуспешного ответа**
+
+```json
+{
+    "code": 1001,
+    "msg": "Order not found"
+}
+```
+
+### 7.5. Получить информацию о заказе
+
+```text
+GET api/v1/orders/{order_id}
+```
+
+Запрос возвращает объект заказа.
+
+**Параметры в URI**
+
+Имя          | Тип    | Обязательный | По умолчанию | Описание
+------------ | ------ | ------------ | ------------ |------------
+`order_id`   | STRING | YES          | | Уникальный идентификатор заказа. Максимальный размер 128 символов
+
+**Результат**
+
+Имя          | Тип       | Обязательный | По умолчанию | Описание
+------------ | ----------| ------------ | ---------- |------------
+`order_id`   | STRING    | YES | | Уникальный идентификатор заказа, полученный в параметрах запроса.
+`code`       | INT       | YES | | Результат выполнения запроса
+`pin`        | INT       | YES | | 5-ти значный уникальный пин-код заказа
+`terminal_id`| INT       | YES | | Уникальный идентификатор терминала
+`status`     | INT       | YES | | [Статус заказа](#61-статус-заказа)
+`when_created` | TIMESTAMP | YES | | Дата и время создания заказа в формате timestamp
+`height`     | INT | YES | | Высота коробки в см.
+`weight`     | INT | YES | | Вес в граммах.
+`period`     | INT | NO  | | Срок хранения заказа
+
+**Возможные коды ошибок**
+
+- 1001 NOT_FOUND
+
+**Пример запроса**
+
+`GET https://base_url/api/v1/orders/RB795731216SG`
+
+**Пример успешного ответа**
+
+```json
+{
+    "order_id": "RB795731216SG",
+    "code": 1000, 
+    "pin": 12345,
+    "status": 50,
+    "when_created": 1653553048,
+    "height": 10,
+    "weight": 204,
+    "period": 4
 }
 ```
 
