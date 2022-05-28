@@ -473,7 +473,7 @@ GET api/v1/orders/{order_id}/history
             "weight": 222
         },
         {
-            "order_id": "RB1212121216SG",
+            "order_id": "RB795731216SG",
             "pin": 12345,
             "terminal_id": 999,
             "status": 10,
