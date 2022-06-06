@@ -66,7 +66,7 @@
 
 ## 5. Аутентификация запросов
 
-Каждый запрос должен использовать `Basic authentication` c `ClientID`и `SecretKey` клиента в формате `base64(ClientID:SecretKey)`
+Каждый запрос должен использовать `Basic authentication` c `ApiClientKey`и `ApiClientSecret` клиента в формате `base64(ApiClientKey:ApiClientSecret)`
 
 Пример:
 
@@ -80,7 +80,7 @@ Authorization: Basic NDIyNjoyNTBlNzBmYjgzYmIwYmI2YjJkYjkwMzYwZjI0YWUyMjhiM2I4Y2U
 
 Имя            | Тип       | Обязательный | По умолчанию | Описание
 -------------- | ----------| ------------ | ---------- |------------
-`order_id`     | STRING    | YES |   | Уникальный идентификатор заказа. Генерируется на стороне клиента. Может представлять собой `Штриховой почтовый идентификатор`. Максимальный размер 128 символов.
+`barcode`      | STRING    | YES |   | Уникальный идентификатор заказа. Генерируется на стороне клиента. Может представлять собой `Штриховой почтовый идентификатор`. Максимальный размер 128 символов.
 `pin`          | INT       | YES |   | 5-ти значный уникальный пин-код заказа
 `terminal_id`  | INT       | YES |   | Уникальный идентификатор терминала, которому принадлежит заказ
 `status`       | INT       | YES |   | [Статус заказа](#62-статус-заказа)
@@ -107,7 +107,7 @@ Authorization: Basic NDIyNjoyNTBlNzBmYjgzYmIwYmI2YjJkYjkwMzYwZjI0YWUyMjhiM2I4Y2U
 ### 7.1. Забронировать место для размещения заказа
 
 ```text
-POST api/v1/terminals/{terminal_id}/orders/{order_id}
+POST api/v1/terminals/{terminal_id}/orders/{barcode}
 ```
 
 Каждый авторизованный пользователь может создать новый заказ. Это приведет к бронированию места под него. В терминале резервируется место, достаточное для размещения заказа, указанного размера.
@@ -117,7 +117,7 @@ POST api/v1/terminals/{terminal_id}/orders/{order_id}
 Имя          | Тип     | Обязательный | По умолчанию | Описание
 ------------ | ------- | ------------ | ---------- |------------
 `terminal_id`| INT     | YES | | Уникальный идентификатор терминала
-`order_id`   | STRING  | YES | | Уникальный идентификатор заказа, может представлять собой `Штриховой почтовый идентификатор`. Максимальный размер 128 символов.
+`barcode`    | STRING  | YES | | Уникальный идентификатор заказа, может представлять собой `Штриховой почтовый идентификатор`. Максимальный размер 128 символов.
 
 **Параметры в теле запроса**
 
@@ -140,7 +140,7 @@ POST api/v1/terminals/{terminal_id}/orders/{order_id}
 - 1103 NO_FREE_TRAY
 - 1104 MAX_HEIGHT_LIMIT
 - 1105 INCORRECT_PERIOD
-- 1106 INCORRECT_ORDER_ID
+- 1106 INCORRECT_BARCODE
 
 **Пример запроса**
 
@@ -160,7 +160,7 @@ POST api/v1/terminals/{terminal_id}/orders/{order_id}
     
     "code": 1000, 
     "order": {
-        "order_id": "RB795731216SG",
+        "barcode": "RB795731216SG",
         "pin": 12345,
         "terminal_id": 999,
         "status": 50,
@@ -184,7 +184,7 @@ POST api/v1/terminals/{terminal_id}/orders/{order_id}
 ### 7.2. Отменить размещение заказа
 
 ```text
-DELETE api/v1/terminals/{terminal_id}/orders/{order_id}
+DELETE api/v1/terminals/{terminal_id}/orders/{barcode}
 ```
 
 Каждый авторизованный пользователь может отменить свое бронирование под заказ. Отменить можно заказ в статусе `оформлено бронирование`.
@@ -194,7 +194,7 @@ DELETE api/v1/terminals/{terminal_id}/orders/{order_id}
 Имя          | Тип     | Обязательный | По умолчанию | Описание
 ------------ | ------- | ------------ | ------------ |------------
 `terminal_id`| INT     | YES          | | Уникальный идентификатор терминала
-`order_id`   | STRING  | YES          | | Уникальный идентификатор заказа. Максимальный размер 128 символов
+`barcode`    | STRING  | YES          | | Уникальный идентификатор заказа. Максимальный размер 128 символов
 
 **Результат**
 
@@ -236,7 +236,7 @@ DELETE api/v1/terminals/{terminal_id}/orders/{order_id}
 ### 7.3. Забронировать место для возврата заказа
 
 ```text
-POST api/v1/terminals/{terminal_id}/orders/{order_id}/return
+POST api/v1/terminals/{terminal_id}/orders/{barcode}/return
 ```
 
 Каждый авторизованный пользователь может забронировать место для возврата заказа.
@@ -246,7 +246,7 @@ POST api/v1/terminals/{terminal_id}/orders/{order_id}/return
 Имя          | Тип | Обязательный | По умолчанию | Описание
 ------------ | ----| ------------ | ------------ |------------
 `terminal_id`| INT | YES          | | Уникальный идентификатор терминала
-`order_id`   | STRING  | YES      | | Уникальный идентификатор заказа. Максимальный размер 128 символов
+`barcode`    | STRING  | YES      | | Уникальный идентификатор заказа. Максимальный размер 128 символов
 
 **Параметры в теле запроса**
 
@@ -285,7 +285,7 @@ POST api/v1/terminals/{terminal_id}/orders/{order_id}/return
 {
     "code": 1000, 
     "order": {
-        "order_id": "RB795731216SG",
+        "barcode": "RB795731216SG",
         "pin": 12345,
         "terminal_id": 999,
         "status": 50,
@@ -310,7 +310,7 @@ POST api/v1/terminals/{terminal_id}/orders/{order_id}/return
 ### 7.4. Отменить возврат
 
 ```text
-DELETE api/v1/terminals/{terminal_id}/orders/{order_id}/return
+DELETE api/v1/terminals/{terminal_id}/orders/{barcode}/return
 ```
 
 Каждый авторизованный пользователь может отменить возврат.
@@ -320,7 +320,7 @@ DELETE api/v1/terminals/{terminal_id}/orders/{order_id}/return
 Имя          | Тип | Обязательный | По умолчанию | Описание
 ------------ | ----| ------------ | ------------ |------------
 `terminal_id`| INT | YES          | | Уникальный идентификатор терминала
-`order_id`   | STRING | YES       | | Уникальный идентификатор заказа. Максимальный размер 128 символов
+`barcode`    | STRING | YES       | | Уникальный идентификатор заказа. Максимальный размер 128 символов
 
 **Результат**
 
@@ -362,16 +362,16 @@ DELETE api/v1/terminals/{terminal_id}/orders/{order_id}/return
 ### 7.5. Получить информацию о заказе
 
 ```text
-GET api/v1/orders/{order_id}
+GET api/v1/orders/{barcode}
 ```
 
 Запрос возвращает объект заказа.
 
 **Параметры в URI**
 
-Имя          | Тип    | Обязательный | По умолчанию | Описание
------------- | ------ | ------------ | ------------ |------------
-`order_id`   | STRING | YES          | | Уникальный идентификатор заказа. Максимальный размер 128 символов
+Имя         | Тип    | Обязательный | По умолчанию | Описание
+----------- | ------ | ------------ | ------------ |------------
+`barcode`   | STRING | YES          | | Уникальный идентификатор заказа. Максимальный размер 128 символов
 
 **Результат**
 
@@ -394,7 +394,7 @@ GET api/v1/orders/{order_id}
 {
     "code": 1000, 
     "order": {
-        "order_id": "RB795731216SG",
+        "barcode": "RB795731216SG",
         "pin": 12345,
         "terminal_id": 999,
         "status": 50,
@@ -419,16 +419,16 @@ GET api/v1/orders/{order_id}
 ### 7.6. Получить историю статусов заказа
 
 ```text
-GET api/v1/orders/{order_id}/history
+GET api/v1/orders/{barcode}/history
 ```
 
 Запрос возвращает информацию об изменениях статуса заказа.
 
 **Параметры в URI**
 
-Имя          | Тип    | Обязательный | По умолчанию | Описание
------------- | ------ | ------------ | ------------ |------------
-`order_id`   | STRING | YES          | | Уникальный идентификатор заказа. Максимальный размер 128 символов
+Имя         | Тип    | Обязательный | По умолчанию | Описание
+----------- | ------ | ------------ | ------------ |------------
+`barcode`   | STRING | YES          | | Уникальный идентификатор заказа. Максимальный размер 128 символов
 
 **Результат**
 
@@ -441,7 +441,7 @@ GET api/v1/orders/{order_id}/history
 
 Имя            | Тип       | Обязательный | По умолчанию | Описание
 -------------- | ----------| ------------ | ---------- |------------
-`order_id`     | STRING    | YES |   | Уникальный идентификатор заказа.
+`barcode`      | STRING    | YES |   | Уникальный идентификатор заказа.
 `pin`          | INT       | YES |   | 5-ти значный уникальный пин-код заказа
 `terminal_id`  | INT       | YES |   | Уникальный идентификатор терминала
 `status`       | INT       | YES |   | [Статус заказа](#62-статус-заказа)
@@ -464,7 +464,7 @@ GET api/v1/orders/{order_id}/history
     "code": 1000, 
     "history": [
         {
-            "order_id": "RB795731216SG",
+            "barcode": "RB795731216SG",
             "pin": 12345,
             "terminal_id": 999,
             "status": 50,
@@ -473,7 +473,7 @@ GET api/v1/orders/{order_id}/history
             "weight": 222
         },
         {
-            "order_id": "RB795731216SG",
+            "barcode": "RB795731216SG",
             "pin": 12345,
             "terminal_id": 999,
             "status": 10,
@@ -535,7 +535,7 @@ GET api/v1/orders
     "code": 1000,
     "orders": [
         {
-            "order_id": "RB795731216SG",
+            "barcode": "RB795731216SG",
             "pin": 12345,
             "terminal_id": 999,
             "status": 50,
@@ -546,7 +546,7 @@ GET api/v1/orders
             "period": 4
         },
         {
-            "order_id": "RB1212121216SG",
+            "barcode": "RB1212121216SG",
             "pin": 12345,
             "terminal_id": 999,
             "status": 50,
