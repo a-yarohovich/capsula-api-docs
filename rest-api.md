@@ -112,10 +112,6 @@ Authorization: Basic NDIyNjoyNTBlNzBmYjgzYmIwYmI2YjJkYjkwMzYwZjI0YWUyMjhiM2I4Y2U
 - `Extracted` : Извлечен курьером
 - `Delivered` : Выдан конечному пользователю
 
-Машина состояний заказа:
-
-![OrderStateMachine](img/order_states.png)
-
 ### 6.2. Объект терминала
 
 Имя             | Тип    | Обязательный | По умолчанию | Описание
