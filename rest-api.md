@@ -95,6 +95,7 @@ Authorization: Basic NDIyNjoyNTBlNzBmYjgzYmIwYmI2YjJkYjkwMzYwZjI0YWUyMjhiM2I4Y2U
 `size3`         | INT    | YES |   | Одно из измерений размера в см.
 `storage_period`| INT    | NO  | 1 | Срок хранения заказа в сутках
 `value`         | INT    | NO  |   | Оценочная стоимость отправления в руб.
+`summ`          | INT    | NO  |   | Сумма к оплате в руб.
 `when_created`  | STRING | YES |   | Время создания заказа в формате ISO 8601: `YYYY-MM-DDTHH:MM:SSZ`
 
 #### 6.1.1. Статусы заказа
@@ -120,11 +121,6 @@ Authorization: Basic NDIyNjoyNTBlNzBmYjgzYmIwYmI2YjJkYjkwMzYwZjI0YWUyMjhiM2I4Y2U
 `status`        | STRING | YES |   | `Active` - активен, `NotActive` - не активен, `Closed`- закрыт
 `name`          | STRING | YES |   | Имя терминала, например `capsula-term-prod-N1`
 `description`   | STRING | NO  |   | Описание терминала в свободной форме
-`trays`         | INT    | YES |   | Всего лотков
-`freetrays`     | INT    | YES |   | Всего свободных лотков
-`cells`         | INT    | YES |   | Всего ячеек
-`freecells`     | INT    | YES |   | Всего свободных ячеек
-`cellsize`      | INT    | YES |   | Размер ячейки в см.
 
 ## 7. Взаимодействие с партнерской системой
 
@@ -548,22 +544,12 @@ GET api/v1/terminals
         {
            "terminal_id": 232,
            "status": "Active",      
-           "name": "capsula-term-prod-N1",
-           "trays": 10,        
-           "freetrays": 2,
-           "cells": 20,
-           "freecells": 10,
-           "cellsize" : 5 
+           "name": "capsula-term-prod-N1"
         },
         {
           "terminal_id": 999,
            "status": "Active",      
-           "name": "capsula-term-prod-N2",
-           "trays": 12,        
-           "freetrays": 2,
-           "cells": 22,
-           "freecells": 10,
-           "cellsize" : 5 
+           "name": "capsula-term-prod-N2"
         }
     ]
 }
